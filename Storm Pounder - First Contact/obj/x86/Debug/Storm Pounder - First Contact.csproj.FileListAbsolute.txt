@@ -1,0 +1,12 @@
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\SDL.dll
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\Storm Pounder - First Contact.exe
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\Storm Pounder - First Contact.pdb
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\Lidgren.Network.dll
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\MonoGame.Framework.dll
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\OpenTK.dll
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\Tao.Sdl.dll
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\obj\x86\Debug\Storm Pounder - First Contact.csprojResolveAssemblyReference.cache
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\obj\x86\Debug\Storm Pounder - First Contact.exe
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\obj\x86\Debug\Storm Pounder - First Contact.pdb
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\data\images\aircraft.png
+C:\Users\Emil\Documents\Visual Studio 2012\Projects\Storm Pounder - First Contact\Storm Pounder - First Contact\bin\WindowsGL\Debug\data\images\lazer.png
