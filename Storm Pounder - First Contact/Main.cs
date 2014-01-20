@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Audio;
 #endregion
 
 namespace Storm_Pounder___First_Contact
@@ -19,6 +20,8 @@ namespace Storm_Pounder___First_Contact
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player player;
+
+        private SoundEffect startup;
 
         private const float speedX = 4.5F;
         private const float speedY = 2.5F;
@@ -38,7 +41,8 @@ namespace Storm_Pounder___First_Contact
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            startup = Content.Load<SoundEffect>("sounds/sm64_mario_lets_go.wav");
+            startup.Play();
             base.Initialize();
         }
 
@@ -50,7 +54,7 @@ namespace Storm_Pounder___First_Contact
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            player = new Player(Content.Load<Texture2D>("images/aircraft"), Window.ClientBounds.Height-64, Window.ClientBounds.Width/2, speedX, speedY, Content.Load<Texture2D>("images/lazer"));
+            player = new Player(Content.Load<Texture2D>("images/aircraft"), Window.ClientBounds.Height-96, Window.ClientBounds.Width/2, speedX, speedY, Content.Load<Texture2D>("images/lazer"), Content.Load<SoundEffect>("sounds/sm64_mario_hoo"));
 
 
             // TODO: use this.Content to load your game content here

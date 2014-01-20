@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -11,17 +12,19 @@ namespace Storm_Pounder___First_Contact
     class Player : PhysicalObject
     {
         double LastBulletTime = 0;
-        private const int pacifism = 70;
+        private const int pacifism = 200;
         private int points = 0;
         public int Points { get { return points; } set { points = value; } }
         private List<Bullet> bullets;
         private Texture2D bulletTexture;
+        private SoundEffect shot;
 
         public List<Bullet> Bullets { get { return bullets; } }
 
-        public Player(Texture2D texture, float X, float Y, float speedX, float speedY, Texture2D bulletTexture)
+        public Player(Texture2D texture, float X, float Y, float speedX, float speedY, Texture2D bulletTexture, SoundEffect shot)
             : base(texture, X, Y, speedX, speedY)
         {
+            this.shot = shot;
             bullets = new List<Bullet>();
             this.bulletTexture = bulletTexture;
 
@@ -66,6 +69,7 @@ namespace Storm_Pounder___First_Contact
                     bullets.Add(bLeft);
                     bullets.Add(bRight);
                     LastBulletTime = gameTime.TotalGameTime.TotalMilliseconds;
+                    this.shot.Play(0.3F, 0F, 0F);
                 }
             }
             foreach (Bullet b in bullets.ToList())
