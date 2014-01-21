@@ -12,7 +12,7 @@ namespace Storm_Pounder___First_Contact
     class Player : PhysicalObject
     {
         double LastBulletTime = 0;
-        private const int pacifism = 200;
+        private const int pacifism = 70;
         private int points = 0;
         public int Points { get { return points; } set { points = value; } }
         private List<Bullet> bullets;
@@ -80,10 +80,10 @@ namespace Storm_Pounder___First_Contact
             }
             #endregion
         }
-        public override void Draw(SpriteBatch sb)
+        public override void Draw(SpriteBatch sb, float opacity = 1F)
         {
             foreach (Bullet b in bullets)
-                b.Draw(sb);
+                b.Draw(sb, (b.Y < 150 ? (b.Y+50)/ 200 : 1));
             sb.Draw(texture, vector, Color.White);
         }
     }

@@ -25,11 +25,16 @@ namespace Storm_Pounder___First_Contact
 
         private const float speedX = 4.5F;
         private const float speedY = 2.5F;
+        private float frameRate = 0;
 
         public Main() : base()
         {
             graphics = new GraphicsDeviceManager(this);
+            //graphics.IsFullScreen = true;
+            //graphics.PreferredBackBufferHeight = 1080;
+            //graphics.PreferredBackBufferWidth = 1920;
             Content.RootDirectory = "data";
+
         }
 
         /// <summary>
@@ -41,6 +46,7 @@ namespace Storm_Pounder___First_Contact
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+
             startup = Content.Load<SoundEffect>("sounds/sm64_mario_lets_go.wav");
             startup.Play();
             base.Initialize();
@@ -93,10 +99,11 @@ namespace Storm_Pounder___First_Contact
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
             player.Draw(spriteBatch);
-
+            frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.Window.Title = "FPS: " + frameRate.ToString();
             spriteBatch.End();
             // TODO: Add your drawing code here
 
