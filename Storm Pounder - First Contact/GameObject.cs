@@ -23,9 +23,9 @@ namespace Storm_Pounder___First_Contact
             this.vector.X = x;
             this.vector.Y = y;
         }
-        public virtual void Draw(SpriteBatch sb)
+        public virtual void Draw(SpriteBatch sb, float opacity = 1F)
         {
-            sb.Draw(texture, vector, Color.White);
+            sb.Draw(texture, vector, Color.White * opacity);
         }
 
     }
