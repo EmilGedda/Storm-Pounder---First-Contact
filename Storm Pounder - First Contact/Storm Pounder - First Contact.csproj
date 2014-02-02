@@ -35,7 +35,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Bullet.cs" />
+    <Compile Include="Projectile.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="MovingObject.cs" />
@@ -71,6 +71,12 @@
     </Content>
     <Content Include="data\images\lazer.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\sounds\Explosion3.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\sounds\Powerup4.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\sounds\sm64_mario_hoo.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

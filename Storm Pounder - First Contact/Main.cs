@@ -26,8 +26,13 @@ namespace Storm_Pounder___First_Contact
         private const float speedX = 4.5F;
         private const float speedY = 2.5F;
         private float frameRate = 0;
+        static int Score;
+        static List<StandardEnemy> Enemies = new List<StandardEnemy>();
+        const int numEnemies = 10;
+        static Random rng = new Random();
 
-        public Main() : base()
+        public Main()
+            : base()
         {
             graphics = new GraphicsDeviceManager(this);
             //graphics.IsFullScreen = true;
@@ -60,8 +65,9 @@ namespace Storm_Pounder___First_Contact
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            player = new Player(Content.Load<Texture2D>("images/aircraft"), Window.ClientBounds.Height-96, Window.ClientBounds.Width/2, speedX, speedY, Content.Load<Texture2D>("images/lazer"), Content.Load<SoundEffect>("sounds/sm64_mario_hoo"));
-
+            player = new Player(Content.Load<Texture2D>("images/aircraft"), Window.ClientBounds.Height - 96, Window.ClientBounds.Width / 2, speedX, speedY, Content.Load<Texture2D>("images/lazer"), Content.Load<SoundEffect>("sounds/Powerup4"));
+            for (int i = 0; i < numEnemies; i++)
+                Enemies.Add(new StandardEnemy(Content.Load<Texture2D>("images/aircraft"), rng.Next(Window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, rng.Next(10, 40) / -10, Content.Load<SoundEffect>("sounds/Explosion3.wav")));
 
             // TODO: use this.Content to load your game content here
         }
@@ -86,6 +92,24 @@ namespace Storm_Pounder___First_Contact
                 Exit();
 
             player.Update(Window, gameTime);
+            foreach (StandardEnemy e in Enemies.ToArray())
+            {
+                e.Update(Window);
+                foreach (Projectile p in player.Bullets)
+                    if (e.isColliding(p))
+                    {
+                        p.IsAlive = false;
+                        e.IsAlive = false;
+                        Score++;
+                        if (Score % 8 == 0)
+                            Enemies.Add(new StandardEnemy(Content.Load<Texture2D>("images/aircraft"), rng.Next(Window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, rng.Next(10, 40) / -10, Content.Load<SoundEffect>("sounds/Explosion3.wav")));
+
+                    }
+                if (e.isColliding(player))
+                    Exit();
+
+            }
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -98,13 +122,22 @@ namespace Storm_Pounder___First_Contact
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-
+            /*var rect = new Texture2D(graphics.GraphicsDevice, 1, 1);
+            rect.SetData(new[] { Color.White });
+            //spriteBatch.Draw(rect, new Rectangle((int)player.X, (int)player.Y, (int)player.Width, (int)player.Height), Color.Red);*/
             player.Draw(spriteBatch);
+            foreach (StandardEnemy e in Enemies)
+            {
+                /*var rect2 = new Texture2D(graphics.GraphicsDevice, 1, 1);
+                rect2.SetData(new[] { Color.White });
+                spriteBatch.Draw(rect2, new Rectangle((int)e.X, (int)e.Y, (int)e.Width, (int)e.Height), Color.Red);*/
+                e.Draw(spriteBatch);
+            }
             frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
-            this.Window.Title = "FPS: " + frameRate.ToString();
+            this.Window.Title = "FPS: " + ((int)frameRate).ToString() + " Score: " + Score + " Enemies: " + Enemies.Count;
             spriteBatch.End();
+
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
