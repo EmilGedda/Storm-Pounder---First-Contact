@@ -13,11 +13,12 @@ namespace Storm_Pounder___First_Contact
             : base(texture, X, Y, 0, ProjectileSpeed)
         {
         }
-        public void Update()
+        public override void Update()
         {
             position.Y -= speed.Y;
             if (position.Y + texture.Height < 0 || health <= 0)
                 IsAlive = false;
+            base.Update();
         }
     }
 }

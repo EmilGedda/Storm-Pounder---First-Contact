@@ -13,6 +13,7 @@ namespace Storm_Pounder___First_Contact
     {
         private List<MenuItem> items;
 
+        public bool IsActive { get; set; }
         private int selected = 0;
         private double lastChange = 0;
         private const int slowmode = 130;
@@ -45,10 +46,7 @@ namespace Storm_Pounder___First_Contact
                     selected = (selected == 0) ? items.Count - 1 : selected - 1;
             }
 
-            if (keyboard.IsKeyDown(Keys.Enter))
-                return items[selected].State;
-
-            return defaultState;
+            return keyboard.IsKeyDown(Keys.Enter) ? items[selected].State : defaultState;
         }
         public void Draw(SpriteBatch spriteBatch)
         {

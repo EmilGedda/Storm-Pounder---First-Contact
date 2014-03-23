@@ -25,7 +25,7 @@ namespace Storm_Pounder___First_Contact
         {
             this.texture = texture;
             this.position = position;
-            this.state = currentstate;
+            state = currentstate;
         }
     }
 }

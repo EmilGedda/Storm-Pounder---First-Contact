@@ -9,8 +9,8 @@ namespace Storm_Pounder___First_Contact
 
         public MovingObject(Texture2D texture, float X, float Y, float speedX, float speedY) : base(texture, X, Y)
         {
-            this.speed.X = speedX;
-            this.speed.Y = speedY;
+            speed.X = speedX;
+            speed.Y = speedY;
         }
     }
 }

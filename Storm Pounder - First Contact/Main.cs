@@ -13,48 +13,32 @@ namespace Storm_Pounder___First_Contact
     public class Main : Game
     {
         GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
-        Player _player;
+        SpriteBatch spriteBatch;
 
-        private SoundEffect _startup;
-
-        private const float SpeedX = 4.5F;
-        private const float SpeedY = 2.5F;
-        static int _score = 0;
         static readonly List<StandardEnemy> Enemies = new List<StandardEnemy>();
-        const int NumEnemies = 10;
-        static readonly Random rng = new Random();
 
         public Main()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            /*graphics.IsFullScreen = true;
-            //graphics.PreferredBackBufferHeight = 1080;
-            //graphics.PreferredBackBufferWidth = 1920;*/
+            _graphics = new GraphicsDeviceManager(this)
+            {
+                IsFullScreen = true,
+                PreferredBackBufferHeight = 1080,
+                PreferredBackBufferWidth = 1920
+            };
             Content.RootDirectory = "data";
         }
 
         protected override void Initialize()
         {
-            Timer t = new Timer(1000);
-            t.Elapsed += PreventMemoryLeak;
-            t.Start();
-            _startup = Content.Load<SoundEffect>("sounds/sm64_mario_lets_go.wav");
-            _startup.Play();
+            GameCore.Initialize();
             base.Initialize();
         }
-
-        private static void PreventMemoryLeak(object sender, ElapsedEventArgs args)
-        {
-            GC.Collect();
-        }
-
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _player = new Player(Content.Load<Texture2D>("images/aircraft"), Window.ClientBounds.Height - 96, Window.ClientBounds.Width / 2, SpeedX, SpeedY, Content.Load<Texture2D>("images/lazer"), Content.Load<SoundEffect>("sounds/Powerup4"));
-            for (int i = 0; i < NumEnemies; i++)
-                Enemies.Add(new StandardEnemy(Content.Load<Texture2D>("images/aircraft"), rng.Next(Window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, rng.Next(10, 40) / -10, Content.Load<SoundEffect>("sounds/Explosion3.wav")));
+
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            GameCore.LoadContent(Content, Window);
+
         }
 
 
@@ -64,28 +48,21 @@ namespace Storm_Pounder___First_Contact
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
 
-            _player.Update(Window, gameTime);
-            StandardEnemy[] arr = Enemies.ToArray();
-            foreach (StandardEnemy e in arr)
+            switch (GameCore.CurrentState)
             {
-                e.Update(Window);
-                foreach (Projectile p in _player.Bullets)
-                    if (e.isColliding(p))
-                    {
-                        
-                       // p.IsAlive = false;
-                        e.IsAlive = false;
-                        //_score++;
-                        //if (Score % 8 == 0)
-                        //    Enemies.Add(new StandardEnemy(Content.Load<Texture2D>("images/aircraft"), rng.Next(Window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, rng.Next(10, 40) / -10, Content.Load<SoundEffect>("sounds/Explosion3.wav")));
-
-                    }
-                //if (e.isColliding(player))
-                  //  Exit();
-
+                case GameCore.State.Play:
+                    GameCore.CurrentState = GameCore.RunUpdate(Content, Window, gameTime);
+                    break;
+                case GameCore.State.HighScore:
+                    GameCore.CurrentState = GameCore.HighscoreUpdate();
+                    break;
+                case GameCore.State.Quit:
+                    Exit();
+                    break;
+                default:
+                    GameCore.CurrentState = GameCore.MenuUpdate();
+                    break;
             }
 
             base.Update(gameTime);
@@ -94,19 +71,28 @@ namespace Storm_Pounder___First_Contact
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            /*var rect = new Texture2D(graphics.GraphicsDevice, 1, 1);
-            rect.SetData(new[] { Color.White });
-            //spriteBatch.Draw(rect, new Rectangle((int)player.X, (int)player.Y, (int)player.Width, (int)player.Height), Color.Red);*/
-            _player.Draw(_spriteBatch);
-            foreach (StandardEnemy e in Enemies)
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            //var rect = new Texture2D(_graphics.GraphicsDevice, 1, 1);
+            //rect.SetData(new[] { Color.White });
+            //spriteBatch.Draw(rect, _player.HitBox, Color.Red);
+            // Hitboxes
+            switch (GameCore.CurrentState)
             {
-                //var rect2 = new Texture2D(graphics.GraphicsDevice, 1, 1);
-                //rect2.SetData(new[] { Color.White });
-                //spriteBatch.Draw(rect2, new Rectangle((int)e.X, (int)e.Y, (int)e.Width, (int)e.Height), Color.Red);
-                e.Draw(_spriteBatch);
+                case GameCore.State.Play:
+                    GameCore.RunDraw(spriteBatch);
+                    break;
+                case GameCore.State.HighScore:
+                    GameCore.HighScoreDraw(spriteBatch);
+                    break;
+                case GameCore.State.Quit:
+                    Exit();
+                    break;
+                default:
+                    GameCore.MenuDraw(spriteBatch);
+                    break;
             }
-            _spriteBatch.End();
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

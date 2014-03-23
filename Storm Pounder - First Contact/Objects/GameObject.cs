@@ -15,22 +15,20 @@ namespace Storm_Pounder___First_Contact
 
         public GameObject(Texture2D t, float x, float y)
         {
-            this.texture = t;
-            this.position.X = x;
-            this.position.Y = y;
+            texture = t;
+            position.X = x;
+            position.Y = y;
         }
 
-        public virtual void Draw(SpriteBatch sb, float opacity = 1F, float rotation = 0)
+        public virtual void Draw(SpriteBatch sb, Color? color = null, float opacity = 1F, float rotation = 0)
         {
-            sb.Draw(texture, position, null, Color.White * opacity, rotation, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            sb.Draw(texture, position, null, color.HasValue ? color.Value : Color.White * opacity, rotation, Vector2.Zero, 1f, SpriteEffects.None, 0);
             //sb.Draw(texture, position, Color.White * opacity);
             //((position.Y < 25) ? (position.Y / 25): opacity)
         }
-        public virtual void Draw(SpriteBatch sb, Color color, float opacity = 1F, float rotation = 0)
+        public virtual void Draw(SpriteBatch sb)
         {
-            sb.Draw(texture, position, null, color * opacity, rotation, Vector2.Zero, 1f, SpriteEffects.None, 0);
-            //sb.Draw(texture, position, Color.White * opacity);
-            //((position.Y < 25) ? (position.Y / 25): opacity)
+            Draw(sb, rotation: 0);
         }
 
     }
