@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace Storm_Pounder___First_Contact.Core
+namespace Storm_Pounder___First_Contact
 {
     static class FPS
     {

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using OpenTK.Graphics.OpenGL;
 
-namespace Storm_Pounder___First_Contact.Core
+namespace Storm_Pounder___First_Contact
 {
     class Font
     {

@@ -12,7 +12,7 @@ namespace Storm_Pounder___First_Contact
 {
     public class Main : Game
     {
-        GraphicsDeviceManager _graphics;
+        readonly GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
 
         static readonly List<StandardEnemy> Enemies = new List<StandardEnemy>();
@@ -23,7 +23,8 @@ namespace Storm_Pounder___First_Contact
             {
                 IsFullScreen = true,
                 PreferredBackBufferHeight = 1080,
-                PreferredBackBufferWidth = 1920
+                PreferredBackBufferWidth = 1920,
+                PreferMultiSampling = true,
             };
             Content.RootDirectory = "data";
         }
@@ -38,7 +39,6 @@ namespace Storm_Pounder___First_Contact
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameCore.LoadContent(Content, Window);
-
         }
 
 
@@ -52,7 +52,7 @@ namespace Storm_Pounder___First_Contact
             switch (GameCore.CurrentState)
             {
                 case GameCore.State.Play:
-                    GameCore.CurrentState = GameCore.RunUpdate(Content, Window, gameTime);
+                    GameCore.CurrentState = GameCore.RunUpdate(Window, gameTime);
                     break;
                 case GameCore.State.HighScore:
                     GameCore.CurrentState = GameCore.HighscoreUpdate();
@@ -71,7 +71,7 @@ namespace Storm_Pounder___First_Contact
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
             //var rect = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             //rect.SetData(new[] { Color.White });
             //spriteBatch.Draw(rect, _player.HitBox, Color.Red);

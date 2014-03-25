@@ -28,7 +28,7 @@ namespace Storm_Pounder___First_Contact
                 }
                do
                 {
-                    speed.Y = -1*rng.Next(10, 40)/10;
+                    speed.Y = (float)rng.NextDouble() * -3 - 1;
                     position.Y = rng.Next(-200, -50);
                     position.X = rng.Next(0, (int) (Window.ClientBounds.Width - Width));
                 } while (!GameCore.enemies.Any(IsColliding));
