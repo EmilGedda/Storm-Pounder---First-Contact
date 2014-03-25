@@ -10,12 +10,14 @@ namespace Storm_Pounder___First_Contact
     class Player : PhysicalObject
     {
         double LastBulletTime = 0;
-        private const int pacifism = 100;
+        private const int pacifism = 200;
         public int Points { get; set; }
         public bool Pause { get; set; }
         private List<Projectile> bullets;
         private Texture2D bulletTexture;
         private SoundEffect shot;
+        public bool IsInvincible { get; set; }
+        public new bool IsAlive { get { return base.IsAlive; } set { base.IsAlive = IsInvincible ||  value; }}
 
         public IEnumerable<Projectile> Bullets { get { return bullets; } }
 
@@ -64,9 +66,9 @@ namespace Storm_Pounder___First_Contact
             if (kState.IsKeyDown(Keys.Space))
             {
                 if (gameTime.TotalGameTime.TotalMilliseconds > LastBulletTime + pacifism)
-                {
-                    Projectile bLeft = new Projectile(bulletTexture, position.X + texture.Width, position.Y + texture.Height - 10);
-                    Projectile bRight = new Projectile(bulletTexture, position.X - 8, position.Y + texture.Height - 10);
+                { //
+                    Projectile bRight = new Projectile(bulletTexture, Center.X  - (bulletTexture.Width / 2) + 24, position.Y + texture.Height - 24);
+                    Projectile bLeft = new Projectile(bulletTexture, Center.X - (bulletTexture.Width / 2) - 24, position.Y + texture.Height - 24);
                     bullets.Add(bLeft);
                     bullets.Add(bRight);
                     LastBulletTime = gameTime.TotalGameTime.TotalMilliseconds;
@@ -80,7 +82,6 @@ namespace Storm_Pounder___First_Contact
                     bullets.Remove(b);
             }
             #endregion
-
             base.Update();
         }
 

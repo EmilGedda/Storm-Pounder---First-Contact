@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using C3.XNA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -11,7 +13,6 @@ using Microsoft.Xna.Framework.Input;
 using Storm_Pounder___First_Contact.Core;
 
 #endregion
-
 namespace Storm_Pounder___First_Contact
 {
     static class GameCore
@@ -31,42 +32,54 @@ namespace Storm_Pounder___First_Contact
         private const float SpeedY = 3.5F;
         private static Font stencil;
 
-        public static void Initialize()
+        private static StandardEnemy closestEnemy;
+        private static float closestLength;
+        private static GraphicsDeviceManager graphicsDevice;
+        public static void Initialize(GraphicsDeviceManager graphics)
         {
             CurrentState = State.Menu;
             enemies = new List<StandardEnemy>();
+            graphicsDevice = graphics;
         }
 
         public static void LoadContent(ContentManager content, GameWindow window)
         {
             content.Load<SoundEffect>("sounds/sm64_mario_lets_go.wav").Play();
-            player = new Player(content.Load<Texture2D>("images/aircraft"), window.ClientBounds.Height - 96, window.ClientBounds.Width / 2, SpeedX*2, SpeedY, content.Load<Texture2D>("images/lazer"), content.Load<SoundEffect>("sounds/Powerup4"));
-            StandardEnemy.StandardTexture = content.Load<Texture2D>("images/aircraft");
+            player = new Player(content.Load<Texture2D>("images/aircraft"), window.ClientBounds.Height - 96, window.ClientBounds.Width / 2, SpeedX * 2, SpeedY, content.Load<Texture2D>("images/lazer"), content.Load<SoundEffect>("sounds/Powerup4"));
+            StandardEnemy.StandardTexture = content.Load<Texture2D>("images/enemy");
             StandardEnemy.Destruction = content.Load<SoundEffect>("sounds/Explosion3.wav");
             for (int i = 0; i < 15; i++)
-                enemies.Add(new StandardEnemy(StandardEnemy.StandardTexture, rng.Next(window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, rng.Next(10, 40) / -10, StandardEnemy.Destruction ));
+                enemies.Add(new StandardEnemy(StandardEnemy.StandardTexture, rng.Next(window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, rng.Next(10, 40) / -10, StandardEnemy.Destruction));
             menuSprite = content.Load<Texture2D>("images/buttonNG");
             menuPos.X = window.ClientBounds.Width / 2 - menuSprite.Width / 2;
-            menuPos.Y = window.ClientBounds.Height/2 - menuSprite.Height / 2;
+            menuPos.Y = window.ClientBounds.Height / 2 - menuSprite.Height / 2;
             stencil = new Font(content.Load<SpriteFont>("fonts/Stencil"));
-            
+            player.IsInvincible = true;
+
         }
         #region Update methods
         public static State RunUpdate(ContentManager manager, GameWindow window, GameTime gameTime)
         {
             FPS.Update(gameTime);
             player.Update(window, gameTime);
+            closestLength = 100000;
+            closestEnemy = null;
             foreach (StandardEnemy enemy in enemies.ToArray())
             {
+                if ((enemy.Position - player.Position).Length() < closestLength && enemy.Y < player.Y)
+                {
+                    closestLength = (enemy.Position - player.Position).Length();
+                    closestEnemy = enemy;
+                }
                 foreach (Projectile bullet in player.Bullets)
-                    if (enemy.IsColliding(bullet) && bullet.Y > 0)
+                    if (enemy.IsColliding(bullet) && bullet.Y > 0 && enemy.IsAlive && bullet.IsAlive)
                     {
                         enemy.IsAlive = false;
                         bullet.IsAlive = false;
                         player.Points++;
-                        if(player.Points % 5 == 0)
+                        if (player.Points % 5 == 0)
                             enemies.Add(new StandardEnemy(StandardEnemy.StandardTexture, rng.Next(window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, rng.Next(10, 40) / -10, StandardEnemy.Destruction));
-
+                        
 
                     }
 
@@ -74,7 +87,7 @@ namespace Storm_Pounder___First_Contact
                 {
                     if (enemy.IsColliding(player))
                     {
-                        //player.IsAlive = false;
+                        player.IsAlive = false;
                         enemy.IsAlive = false;
                     }
                 }
@@ -83,7 +96,7 @@ namespace Storm_Pounder___First_Contact
                 //    enemies.Remove(enemy);
 
             }
-            return !player.IsAlive || player.Pause? State.Menu : State.Play;
+            return !player.IsAlive || player.Pause ? State.Menu : State.Play;
         }
 
         public static State MenuUpdate()
@@ -111,8 +124,18 @@ namespace Storm_Pounder___First_Contact
         {
             player.Draw(spriteBatch);
             foreach (StandardEnemy enemy in enemies)
+            {
+
                 enemy.Draw(spriteBatch);
-            stencil.Write(String.Format("Score: {0}\nEnemies: {1}\nFPS: {2}", player.Points.ToString(), enemies.Count, FPS.ToString()), spriteBatch, 0, 0);
+                if (enemy != closestEnemy) continue;
+                spriteBatch.DrawRectangle(enemy.HitBox, Color.Red);
+                stencil.Write("D: " + Math.Round((enemy.Center - player.Center).Length(), 1, MidpointRounding.AwayFromZero), spriteBatch, enemy.X + 4, enemy.Y + enemy.Height - 3, 0.4f);
+                stencil.Write("A: " + Math.Round(MathHelper.ToDegrees(player.Center.Angle(enemy.Center)), 1, MidpointRounding.AwayFromZero), spriteBatch, enemy.X + 4, enemy.Y + enemy.Height + 10, 0.4f);
+                if(enemy.Center.Y > 0)
+                    spriteBatch.DrawLine(enemy.Center, player.Center, Color.Red);
+            }
+
+            stencil.Write(String.Format("Score: {0}\nEnemies: {1}\nFPS: {2}", player.Points, enemies.Count, FPS.ToString()), spriteBatch, 20, 10);
 
         }
         public static void HighScoreDraw(SpriteBatch spriteBatch)

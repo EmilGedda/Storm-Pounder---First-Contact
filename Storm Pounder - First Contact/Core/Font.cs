@@ -22,9 +22,13 @@ namespace Storm_Pounder___First_Contact.Core
             Rotation = rotation;
         }
 
-        public void Write(string text, SpriteBatch spriteBatch, int X, int Y)
+        public void Write(string text, SpriteBatch spriteBatch, float X, float Y)
         {
             spriteBatch.DrawString(spriteFont, text, new Vector2(X, Y), Color.White, Rotation, Vector2.Zero, Scale, SpriteEffects.None, 1);
+        }
+        public void Write(string text, SpriteBatch spriteBatch, float X, float Y, float scale)
+        {
+            spriteBatch.DrawString(spriteFont, text, new Vector2(X, Y), Color.White, Rotation, Vector2.Zero, scale, SpriteEffects.None, 1);
         }
         
     }

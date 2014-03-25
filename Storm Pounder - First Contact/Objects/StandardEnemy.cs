@@ -37,7 +37,7 @@ namespace Storm_Pounder___First_Contact
         }
         public override void Draw(SpriteBatch sb, Color? color = null, float opacity = 1F, float rotation = 0)
         {
-            sb.Draw(texture, position, null, Color.LightSalmon * opacity, 0, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0);
+            sb.Draw(texture, position, null, (color ?? Color.White) * opacity, 0, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0);
             //base.Draw(sb, Color.Salmon, rotation: MathHelper.Pi);
         }
 

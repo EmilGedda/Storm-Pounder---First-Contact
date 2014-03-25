@@ -8,6 +8,15 @@ namespace Storm_Pounder___First_Contact
         protected Texture2D texture;
         protected Vector2 position;
 
+        public Vector2 Center
+        {
+            get
+            {
+                return new Vector2(position.X + texture.Width/2, position.Y + texture.Height/2);
+            }
+        }
+
+        public Vector2 Position { get { return position; } }
         public float X { get { return position.X; } }
         public float Y { get { return position.Y; } }
         public float Width { get { return texture.Width; } }

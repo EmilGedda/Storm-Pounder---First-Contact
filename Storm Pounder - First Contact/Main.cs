@@ -30,7 +30,7 @@ namespace Storm_Pounder___First_Contact
 
         protected override void Initialize()
         {
-            GameCore.Initialize();
+            GameCore.Initialize(_graphics);
             base.Initialize();
         }
         protected override void LoadContent()

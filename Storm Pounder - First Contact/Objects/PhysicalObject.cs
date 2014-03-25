@@ -16,7 +16,7 @@ namespace Storm_Pounder___First_Contact
             set { spawnPoint = value; }
         }
 
-        private Rectangle HitBox
+        public Rectangle HitBox
         {
             get { return hitbox; }
             set { hitbox = value; }
