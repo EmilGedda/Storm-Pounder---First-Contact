@@ -14,7 +14,6 @@ namespace Storm_Pounder___First_Contact
     {
         readonly GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
-
         static readonly List<StandardEnemy> Enemies = new List<StandardEnemy>();
 
         public Main()
@@ -52,16 +51,19 @@ namespace Storm_Pounder___First_Contact
             switch (GameCore.CurrentState)
             {
                 case GameCore.State.Play:
+                    IsMouseVisible = false;
                     GameCore.CurrentState = GameCore.RunUpdate(Window, gameTime);
                     break;
                 case GameCore.State.HighScore:
+                    IsMouseVisible = true;
                     GameCore.CurrentState = GameCore.HighscoreUpdate();
                     break;
                 case GameCore.State.Quit:
                     Exit();
                     break;
                 default:
-                    GameCore.CurrentState = GameCore.MenuUpdate();
+                    IsMouseVisible = true;
+                    GameCore.CurrentState = GameCore.MenuUpdate(gameTime);
                     break;
             }
 

@@ -72,7 +72,7 @@ namespace Storm_Pounder___First_Contact
                     bullets.Add(bLeft);
                     bullets.Add(bRight);
                     LastBulletTime = gameTime.TotalGameTime.TotalMilliseconds;
-                    shot.Play(0.3F, 0F, 0F);
+                    shot.Play(0.15F, 0F, 0F);
                 }
             }
             foreach (Projectile b in bullets.ToList())

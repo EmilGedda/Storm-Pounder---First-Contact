@@ -2,8 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using C3.XNA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -18,14 +16,14 @@ namespace Storm_Pounder___First_Contact
     {
         public static readonly Random rng = new Random();
         public static State CurrentState;
-        public enum State { Play, Menu, HighScore, Quit };
+        public enum State { Play, Menu, HighScore, Options, Quit };
 
         private static Background background;
         static Texture2D menuSprite;
         static Vector2 menuPos;
         static Player player;
         public static List<StandardEnemy> enemies;
-        static List<Menu> menus;
+        private static Menu menu;
         static private int currentMenu = 0;
 
         private const float SpeedX = 4.5F;
@@ -44,16 +42,29 @@ namespace Storm_Pounder___First_Contact
 
         public static void LoadContent(ContentManager content, GameWindow window)
         {
+            MouseState s = new MouseState();
+            
+            menu = new Menu((int)State.Menu, content);
+            menu.AddItem(content.Load<Texture2D>("images/menu/btnNewGame"), (int)State.Play, window);
+            menu.AddItem(content.Load<Texture2D>("images/menu/btnHighScore"), (int)State.HighScore, window);
+            menu.AddItem(content.Load<Texture2D>("images/menu/btnOptions"), (int)State.Options, window);
+            menu.AddItem(content.Load<Texture2D>("images/menu/btnQuit"), (int)State.Quit, window);
+
             background = new Background(content, "images/background/endless/", window);
+            
             content.Load<SoundEffect>("sounds/sm64_mario_lets_go.wav").Play();
+            
             player = new Player(content.Load<Texture2D>("images/aircraft"), window.ClientBounds.Height - 96, window.ClientBounds.Width / 2, SpeedX * 2, SpeedY, content.Load<Texture2D>("images/lazer"), content.Load<SoundEffect>("sounds/Powerup4"));
+            
             StandardEnemy.StandardTexture = content.Load<Texture2D>("images/enemy");
             StandardEnemy.Destruction = content.Load<SoundEffect>("sounds/Explosion3.wav");
             for (int i = 0; i < 15; i++)
                 enemies.Add(new StandardEnemy(StandardEnemy.StandardTexture, rng.Next(window.ClientBounds.Width - 64), -1 * rng.Next(500) - 100, 0, (float)rng.NextDouble() * -3 - 1, StandardEnemy.Destruction));
-            menuSprite = content.Load<Texture2D>("images/buttonNG");
+           /*
+            menuSprite = content.Load<Texture2D>("images/menu/btnNewGame");
             menuPos.X = window.ClientBounds.Width / 2 - menuSprite.Width / 2;
             menuPos.Y = window.ClientBounds.Height / 2 - menuSprite.Height / 2;
+            */
             stencil = new Font(content.Load<SpriteFont>("fonts/Stencil"));
             player.IsInvincible = true;
 
@@ -101,8 +112,10 @@ namespace Storm_Pounder___First_Contact
             return !player.IsAlive || player.Pause ? State.Menu : State.Play;
         }
 
-        public static State MenuUpdate()
+        public static State MenuUpdate(GameTime gameTime)
         {
+            return (State) menu.Update(gameTime);
+            /*
             KeyboardState keyboardState = Keyboard.GetState();
             if (keyboardState.IsKeyDown(Keys.S))
             {
@@ -112,7 +125,7 @@ namespace Storm_Pounder___First_Contact
             if (keyboardState.IsKeyDown(Keys.H))
                 return State.HighScore;
 
-            return keyboardState.IsKeyDown(Keys.A) ? State.Quit : State.Menu;
+            return keyboardState.IsKeyDown(Keys.A) ? State.Quit : State.Menu;*/
         }
         public static State HighscoreUpdate()
         {
@@ -148,7 +161,9 @@ namespace Storm_Pounder___First_Contact
         public static void MenuDraw(SpriteBatch spriteBatch)
         {
             background.Draw(spriteBatch);
-            spriteBatch.Draw(menuSprite, menuPos, Color.White);
+            menu.Draw(spriteBatch);
+            //spriteBatch.Draw(menuSprite, menuPos, Color.White);
+
         }
         #endregion
 

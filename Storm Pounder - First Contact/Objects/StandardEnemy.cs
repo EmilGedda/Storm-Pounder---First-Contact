@@ -23,7 +23,7 @@ namespace Storm_Pounder___First_Contact
             {
                 if (!IsAlive)
                 {
-                    Destruction.Play(.5F, 1f, 0F);
+                    Destruction.Play(0.2F, 1F, 0F);
                     IsAlive = true;
                 }
                do
