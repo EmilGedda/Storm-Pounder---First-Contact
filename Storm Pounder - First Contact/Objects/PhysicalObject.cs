@@ -28,8 +28,8 @@ namespace Storm_Pounder___First_Contact
             set { isAlive = value; }
         }
 
-        protected PhysicalObject(Texture2D texture, float X, float Y, float speedX, float speedY)
-            : base(texture, X, Y, speedX, speedY)
+        protected PhysicalObject(Animation a, float X, float Y, float speedX, float speedY)
+            : base(a, X, Y, speedX, speedY)
         {
 
             hitbox = (this is Projectile) ? new Rectangle(Convert.ToInt32(X), Convert.ToInt32(Y), Convert.ToInt32(Width), Convert.ToInt32(Height)) : new Rectangle(Convert.ToInt32(X + 5), Convert.ToInt32(Y + 5), Convert.ToInt32(Width - 10), Convert.ToInt32(Height - 10));
@@ -42,6 +42,8 @@ namespace Storm_Pounder___First_Contact
         {
             hitbox.X = (int)X + margin;
             hitbox.Y = (int) Y + margin;
+            hitbox.Width = (int)Width - 10;
+            hitbox.Height = (int)Height - 10;
         }
         public bool IsColliding(PhysicalObject victim)
         {

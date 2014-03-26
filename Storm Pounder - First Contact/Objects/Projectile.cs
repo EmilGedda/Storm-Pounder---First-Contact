@@ -9,14 +9,14 @@ namespace Storm_Pounder___First_Contact
 
         public float Health { get { return health; } set { health = value; } }
 
-        public Projectile(Texture2D texture, float X, float Y)
-            : base(texture, X, Y, 0, ProjectileSpeed)
+        public Projectile(Animation a, float X, float Y)
+            : base(a, X, Y, 0, ProjectileSpeed)
         {
         }
         public override void Update()
         {
             position.Y -= speed.Y;
-            if (position.Y + texture.Height < 0 || health <= 0)
+            if (position.Y + Height < 0 || health <= 0)
                 IsAlive = false;
             base.Update();
         }

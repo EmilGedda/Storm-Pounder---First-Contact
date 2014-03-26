@@ -52,6 +52,7 @@ namespace Storm_Pounder___First_Contact
             {
                 case GameCore.State.Play:
                     IsMouseVisible = false;
+                    
                     GameCore.CurrentState = GameCore.RunUpdate(Window, gameTime);
                     break;
                 case GameCore.State.HighScore:
@@ -60,6 +61,9 @@ namespace Storm_Pounder___First_Contact
                     break;
                 case GameCore.State.Quit:
                     Exit();
+                    break;
+                    case GameCore.State.Options:
+                    GameCore.CurrentState = GameCore.OptionsUpdate();
                     break;
                 default:
                     IsMouseVisible = true;
@@ -81,7 +85,7 @@ namespace Storm_Pounder___First_Contact
             switch (GameCore.CurrentState)
             {
                 case GameCore.State.Play:
-                    GameCore.RunDraw(spriteBatch);
+                    GameCore.RunDraw(gameTime, spriteBatch);
                     break;
                 case GameCore.State.HighScore:
                     GameCore.HighScoreDraw(spriteBatch);

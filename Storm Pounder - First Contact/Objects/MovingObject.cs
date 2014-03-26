@@ -7,7 +7,7 @@ namespace Storm_Pounder___First_Contact
     {
         protected Vector2 speed;
 
-        public MovingObject(Texture2D texture, float X, float Y, float speedX, float speedY) : base(texture, X, Y)
+        public MovingObject(Animation a, float X, float Y, float speedX, float speedY) : base(a, X, Y)
         {
             speed.X = speedX;
             speed.Y = speedY;

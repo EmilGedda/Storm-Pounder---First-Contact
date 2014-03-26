@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Storm_Pounder___First_Contact;
 
 namespace C3.XNA
 {
@@ -543,6 +544,27 @@ namespace C3.XNA
         public static float Angle(this Vector2 a, Vector2 b)
         {
             return (float)(Math.PI + Math.Atan2(b.Y - a.Y, b.X - a.X));
+        }
+
+        #endregion
+
+        #region Shuffle
+        /// <summary>
+        /// Shuffle an array
+        /// </summary>
+        /// <param name="list">The array to be shuffled</param>
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            Random rng = GameCore.Rng;
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }  
         }
 
         #endregion

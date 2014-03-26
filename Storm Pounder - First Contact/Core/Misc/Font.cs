@@ -14,6 +14,7 @@ namespace Storm_Pounder___First_Contact
         private readonly SpriteFont spriteFont;
         public float Scale { get; set; }
         public float Rotation { get; set; }
+        public string Text { get; set; }
 
         public Font(SpriteFont spriteFont, float scale = 1, float rotation = 0)
         {
@@ -29,6 +30,19 @@ namespace Storm_Pounder___First_Contact
         public void Write(string text, SpriteBatch spriteBatch, float X, float Y, float scale)
         {
             spriteBatch.DrawString(spriteFont, text, new Vector2(X, Y), Color.White, Rotation, Vector2.Zero, scale, SpriteEffects.None, 1);
+        }
+        public float Width(string text)
+        {
+            return Size(text).X;
+        }
+
+        public float Height(string text)
+        {
+            return Size(text).Y;
+        }
+        public Vector2 Size(string text)
+        {
+            return spriteFont.MeasureString(text);
         }
         
     }

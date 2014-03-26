@@ -10,11 +10,13 @@ namespace Storm_Pounder___First_Contact
     {
         public static SoundEffect Destruction;
         public static Texture2D StandardTexture;
-        static Random rng = new Random();
-        public StandardEnemy(Texture2D texture, float X, float Y, float speedX, float speedY, SoundEffect death)
-            : base(texture, X, Y, speedX, speedY)
+        
+        protected static Random rng = new Random();
+        public StandardEnemy(Animation a, float X, float Y, float speedX, float speedY, SoundEffect death)
+            : base(a, X, Y, speedX, speedY)
         {
             Destruction = death;
+            
         }
         public void Update(GameWindow Window)
         {
@@ -29,17 +31,11 @@ namespace Storm_Pounder___First_Contact
                do
                 {
                     speed.Y = (float)rng.NextDouble() * -3 - 1;
-                    position.Y = rng.Next(-200, -50);
+                    position.Y = rng.Next((int)-Height * 2, (int)-Height);
                     position.X = rng.Next(0, (int) (Window.ClientBounds.Width - Width));
                 } while (!GameCore.enemies.Any(IsColliding));
             }
             base.Update();
         }
-        public override void Draw(SpriteBatch sb, Color? color = null, float opacity = 1F, float rotation = 0)
-        {
-            sb.Draw(texture, position, null, (color ?? Color.White) * opacity, 0, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0);
-            //base.Draw(sb, Color.Salmon, rotation: MathHelper.Pi);
-        }
-
     }
 }
