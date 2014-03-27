@@ -1,7 +1,6 @@
 ﻿#region Using Statements
 
 using System.Collections.Generic;
-using System.Media;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -18,7 +17,6 @@ namespace Storm_Pounder___First_Contact
 
         public bool IsActive { get; set; }
         private int lastSelected = -1;
-        private double lastPlayed = 0;
         private int selected = -1;
         private double lastChange = 0;
         private const int slowmode = 130;

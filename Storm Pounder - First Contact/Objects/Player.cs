@@ -24,7 +24,9 @@ namespace Storm_Pounder___First_Contact
         private SoundEffect shot;
 
         public bool IsInvincible { get; set; }
-        public new bool IsAlive { get { return base.IsAlive; } set { base.IsAlive = IsInvincible || value; } }
+        public new bool IsAlive { get { return base.IsAlive || IsInvincible; } }
+
+        public new int Lives { get { return base.Lives; } set { base.Lives = IsInvincible && value < base.Lives ? base.Lives : value; } }
 
         public IEnumerable<Projectile> Bullets { get { return bullets; } }
 
@@ -50,9 +52,9 @@ namespace Storm_Pounder___First_Contact
                 if (kState.IsKeyDown(Keys.Left) || kState.IsKeyDown(Keys.A))
                     speed.X -= 0.17F * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                 if ((kState.IsKeyUp(Keys.Left) && kState.IsKeyUp(Keys.Right) && kState.IsKeyUp(Keys.A) &&
-                    kState.IsKeyUp(Keys.D)) || ((kState.IsKeyDown(Keys.Left) || kState.IsKeyDown(Keys.A)) && kState.IsKeyDown(Keys.Right) ||
-                    kState.IsKeyDown(Keys.D)))
-                    speed.X /= 1.3F;
+                    kState.IsKeyUp(Keys.D)) || ((kState.IsKeyDown(Keys.Left) || kState.IsKeyDown(Keys.A)) && (kState.IsKeyDown(Keys.Right) ||
+                    kState.IsKeyDown(Keys.D))))
+                    speed.X /= 1.5F;
 
                 speed.X = MathHelper.Clamp(speed.X, -MaxSpeedX, MaxSpeedX);
             }
@@ -66,7 +68,7 @@ namespace Storm_Pounder___First_Contact
                      kState.IsKeyUp(Keys.S)) ||
                     ((kState.IsKeyDown(Keys.Up) || kState.IsKeyDown(Keys.W)) && kState.IsKeyDown(Keys.Down) ||
                      kState.IsKeyDown(Keys.S)))
-                    speed.Y /= 1.3F;
+                    speed.Y /= 1.5F;
                 speed.Y = MathHelper.Clamp(speed.Y, -MaxSpeedY, MaxSpeedY);
             }
             position += speed;
@@ -86,7 +88,7 @@ namespace Storm_Pounder___First_Contact
             if (kState.IsKeyDown(Keys.Space))
             {
                 if (gameTime.TotalGameTime.TotalMilliseconds > LastBulletTime + pacifism)
-                { 
+                {
                     Projectile bRight = new Projectile(new Animation(bulletTexture, 1F, true, bulletTexture.Width), Center.X - (bulletTexture.Width / 2) + 24, position.Y + Height - 24);
                     Projectile bLeft = new Projectile(new Animation(bulletTexture, 1F, true, bulletTexture.Width), Center.X - (bulletTexture.Width / 2) - 24, position.Y + Height - 24);
                     bullets.Add(bLeft);
@@ -97,12 +99,12 @@ namespace Storm_Pounder___First_Contact
             }
             foreach (Projectile b in bullets.ToList())
             {
-                b.Update();
+                b.UpdateHitBox();
                 if (!b.IsAlive)
                     bullets.Remove(b);
             }
             #endregion
-            base.Update();
+            UpdateHitBox();
         }
 
         public void Reset(float X, float Y, float speedX, float speedY)

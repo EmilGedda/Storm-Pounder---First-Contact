@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,6 +18,14 @@ namespace Storm_Pounder___First_Contact
         /// Gets the index of the current frame in the animation.
         /// </summary>
         public int FrameIndex { get; private set; }
+
+        public Rectangle CurrentFrame
+        {
+            get
+            {
+                return new Rectangle(FrameIndex*Animation.FrameWidth, 0, Animation.FrameWidth, Animation.FrameHeight);
+            }
+        }
 
         /// <summary>
         /// The amount of time in seconds that the current frame has been shown for.
@@ -76,10 +81,8 @@ namespace Storm_Pounder___First_Contact
             }
 
             // Calculate the source rectangle of the current frame.
-            Rectangle source = new Rectangle(FrameIndex * Animation.FrameWidth, 0, Animation.FrameWidth, Animation.FrameHeight);
-
             // Draw the current frame.
-            spriteBatch.Draw(Animation.Texture, position, source, color.HasValue ? color.Value : Color.White * opacity, rotation, Vector2.Zero, 1.0f, spriteEffects, 0.0f);
+            spriteBatch.Draw(Animation.Texture, position, CurrentFrame, color.HasValue ? color.Value : Color.White * opacity, rotation, Vector2.Zero, 1.0f, spriteEffects, 0.0f);
         }
     }
 }

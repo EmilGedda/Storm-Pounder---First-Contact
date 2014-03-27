@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Storm_Pounder___First_Contact
+﻿namespace Storm_Pounder___First_Contact
 {
     static class Options
     {
-        private static List<int> resolutions;
+        //private static List<int> resolutions;
     }
 }

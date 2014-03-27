@@ -14,6 +14,8 @@ namespace Storm_Pounder___First_Contact
 {
     static class GameCore
     {
+        private const string PlayerTexture = "images/aircraft";
+        private const string EnemyTexture = "images/enemy";
         public static readonly Random Rng = new Random();
         public static State CurrentState;
         public enum State { Play, Menu, HighScore, Options, Quit };
@@ -22,7 +24,6 @@ namespace Storm_Pounder___First_Contact
         static Player player;
         public static List<StandardEnemy> enemies;
         private static Menu menu;
-        static private int currentMenu = 0;
 
         private const float SpeedX = 4.5F;
         private const float SpeedY = 4.0F;
@@ -45,7 +46,6 @@ namespace Storm_Pounder___First_Contact
             boss = new Boss(new Animation(content.Load<Texture2D>("images/boss"), 0.1F, true, 100),Rng.Next(window.ClientBounds.Width - 64), -1*Rng.Next(500) - 100, 0, (float) Rng.NextDouble()*-3 - 1,
                     StandardEnemy.Destruction);
             enemies.Add(boss);
-            MouseState s = new MouseState();
             contentMngr = content;
             _window = window;
             menu = new Menu((int)State.Menu, content);
@@ -56,15 +56,15 @@ namespace Storm_Pounder___First_Contact
 
             background = new Background(content, "images/background/endless/", window);
             
-            content.Load<SoundEffect>("sounds/sm64_mario_lets_go.wav").Play();
+            content.Load<SoundEffect>("sounds/lets_go").Play();
             
-            player = new Player(new Animation(content.Load<Texture2D>("images/aircraft"), 1F, true, 64), window.ClientBounds.Height - 96, window.ClientBounds.Width / 2, SpeedX * 2, SpeedY, content.Load<Texture2D>("images/lazer"), content.Load<SoundEffect>("sounds/shoot"));
+            player = new Player(new Animation(content.Load<Texture2D>(PlayerTexture), 1F, true, 64), window.ClientBounds.Height - 96, window.ClientBounds.Width / 2, SpeedX * 2, SpeedY, content.Load<Texture2D>("images/lazer"), content.Load<SoundEffect>("sounds/shoot"));
             
-            StandardEnemy.StandardTexture = content.Load<Texture2D>("images/enemy");
-            StandardEnemy.Destruction = content.Load<SoundEffect>("sounds/Explosion3.wav");
-            for (int i = 0; i < 10; i++)
+            StandardEnemy.StandardTexture = content.Load<Texture2D>(EnemyTexture);
+            StandardEnemy.Destruction = content.Load<SoundEffect>("sounds/Explosion3");
+            for (int i = 0; i < 5; i++)
                 enemies.Add(new StandardEnemy(new Animation(StandardEnemy.StandardTexture, 1F, true, StandardEnemy.StandardTexture.Width),
-                    Rng.Next(window.ClientBounds.Width - 64), -1*Rng.Next(500) - 100, 0, (float) Rng.NextDouble()*-3 - 1,
+                    Rng.Next(window.ClientBounds.Width - 64), -1*Rng.Next(500) - 100, 0,  (float) Rng.NextDouble()*-3 - 1,
                     StandardEnemy.Destruction));
            /*
             menuSprite = content.Load<Texture2D>("images/menu/btnNewGame");
@@ -72,7 +72,7 @@ namespace Storm_Pounder___First_Contact
             menuPos.Y = window.ClientBounds.Height / 2 - menuSprite.Height / 2;
             */
             Stencil = new Font(content.Load<SpriteFont>("fonts/Stencil"));
-            //player.IsInvincible = true;
+            player.IsInvincible = true;
 
         }
         #region Update methods
@@ -85,7 +85,7 @@ namespace Storm_Pounder___First_Contact
             closestEnemy = null;
             foreach (StandardEnemy enemy in enemies.ToArray())
             {
-                if ((enemy.Position - player.Position).Length() < closestLength && enemy.Y < player.Y)
+                if ((enemy.Center - player.Center).Length() < closestLength && enemy.Y < player.Y)
                 {
                     closestLength = (enemy.Position - player.Position).Length();
                     closestEnemy = enemy;
@@ -93,10 +93,10 @@ namespace Storm_Pounder___First_Contact
                 foreach (Projectile bullet in player.Bullets)
                     if (enemy.IsColliding(bullet) && bullet.Y > 0 && enemy.IsAlive && bullet.IsAlive)
                     {
-                        enemy.IsAlive = false;
-                        bullet.IsAlive = false;
+                        enemy.Lives--;
+                        bullet.Lives--;
                         player.Points++;
-                        if (player.Points % 5 == 0)
+                        if (player.Points % 10 == 0)
                             enemies.Add(new StandardEnemy(new Animation(StandardEnemy.StandardTexture, 1F, true, StandardEnemy.StandardTexture.Width), Rng.Next(window.ClientBounds.Width - 64), -1 * Rng.Next(500) - 100, 0, Rng.Next(10, 40) / -10, StandardEnemy.Destruction));
                     }
 
@@ -104,8 +104,8 @@ namespace Storm_Pounder___First_Contact
                 {
                     if (enemy.IsColliding(player))
                     {
-                        player.IsAlive = false;
-                        enemy.IsAlive = false;
+                        player.Lives--;
+                        enemy.Lives--;
                     }
                 }
                 enemy.Update(window);
@@ -117,7 +117,7 @@ namespace Storm_Pounder___First_Contact
 
         public static State MenuUpdate(GameTime gameTime)
         {
-            player.IsAlive = true;
+            player.Lives = 3;
             return (State) menu.Update(gameTime);
         }
         public static State HighscoreUpdate()
@@ -137,19 +137,21 @@ namespace Storm_Pounder___First_Contact
         {
             background.Draw(spriteBatch);
             player.Draw(spriteBatch, gameTime);
+            spriteBatch.DrawRectangle(player.HitBox, Color.Red);
             foreach (StandardEnemy enemy in enemies)
             {
                // enemy.DrawAnim(gameTime, spriteBatch);
-                enemy.Draw(spriteBatch, gameTime, SpriteEffects.FlipVertically);
+                enemy.Draw(spriteBatch, gameTime);
                 if (enemy != closestEnemy) continue;
                 spriteBatch.DrawRectangle(enemy.HitBox, Color.Red);
                 Stencil.Write("D: " + Math.Round((enemy.Center - player.Center).Length(), 1, MidpointRounding.AwayFromZero), spriteBatch, enemy.X + 4, enemy.Y + enemy.Height - 3, 0.4f);
-                Stencil.Write("A: " + Math.Round(MathHelper.ToDegrees(player.Center.Angle(enemy.Center)), 1, MidpointRounding.AwayFromZero), spriteBatch, enemy.X + 4, enemy.Y + enemy.Height + 10, 0.4f);
+                Stencil.Write("A: " + Math.Round(MathHelper.ToDegrees(player.Center.Angle(enemy.Center)), 1, MidpointRounding.AwayFromZero), spriteBatch, enemy.X + 4, enemy.Y + enemy.Height + 9, 0.4f);
+                Stencil.Write("L: " + enemy.Lives.ToString(), spriteBatch, enemy.X + 4, enemy.Y + enemy.Height + 21, 0.4F);
                 if(enemy.Center.Y > 0)
                     spriteBatch.DrawLine(enemy.Center, player.Center, Color.Red);
             }
 
-            Stencil.Write(String.Format("Score: {0}\nEnemies: {1}\nFPS: {2}", player.Points, enemies.Count, FPS.ToString()), spriteBatch, 20, 10);
+            Stencil.Write(String.Format("Score: {0}\nEnemies: {1}\nFPS: {2}\nLives: {3}", player.Points, enemies.Count, FPS.ToString(), player.Lives), spriteBatch, 20, 10);
 
         }
         public static void HighScoreDraw(SpriteBatch spriteBatch)

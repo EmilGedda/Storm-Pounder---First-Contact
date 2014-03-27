@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-
-namespace Storm_Pounder___First_Contact
+﻿namespace Storm_Pounder___First_Contact
 {
     class Projectile : PhysicalObject
     {
@@ -12,13 +10,14 @@ namespace Storm_Pounder___First_Contact
         public Projectile(Animation a, float X, float Y)
             : base(a, X, Y, 0, ProjectileSpeed)
         {
+            Lives = 1;
         }
-        public override void Update()
+        public override void UpdateHitBox()
         {
             position.Y -= speed.Y;
             if (position.Y + Height < 0 || health <= 0)
-                IsAlive = false;
-            base.Update();
+                Lives--;
+            base.UpdateHitBox();
         }
     }
 }

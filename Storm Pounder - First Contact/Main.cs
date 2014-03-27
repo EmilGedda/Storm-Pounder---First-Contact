@@ -1,11 +1,9 @@
 ﻿#region Using Statements
-using System;
+
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
-using System.Timers;
+
 #endregion
 
 namespace Storm_Pounder___First_Contact
@@ -16,16 +14,16 @@ namespace Storm_Pounder___First_Contact
         SpriteBatch spriteBatch;
         static readonly List<StandardEnemy> Enemies = new List<StandardEnemy>();
 
-        public Main()
+        public Main() 
         {
             _graphics = new GraphicsDeviceManager(this)
             {
-                IsFullScreen = true,
-                PreferredBackBufferHeight = 1080,
-                PreferredBackBufferWidth = 1920,
+                IsFullScreen = false,
+                PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height,
+                PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
                 PreferMultiSampling = true,
             };
-            Content.RootDirectory = "data";
+            Content.RootDirectory = "Content";
         }
 
         protected override void Initialize()

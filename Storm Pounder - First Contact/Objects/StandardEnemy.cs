@@ -10,13 +10,14 @@ namespace Storm_Pounder___First_Contact
     {
         public static SoundEffect Destruction;
         public static Texture2D StandardTexture;
+        protected int DefaultLives = 1;
         
         protected static Random rng = new Random();
         public StandardEnemy(Animation a, float X, float Y, float speedX, float speedY, SoundEffect death)
             : base(a, X, Y, speedX, speedY)
         {
             Destruction = death;
-            
+            Lives = DefaultLives;
         }
         public void Update(GameWindow Window)
         {
@@ -26,16 +27,16 @@ namespace Storm_Pounder___First_Contact
                 if (!IsAlive)
                 {
                     Destruction.Play(0.2F, 1F, 0F);
-                    IsAlive = true;
                 }
                do
-                {
+               {
                     speed.Y = (float)rng.NextDouble() * -3 - 1;
                     position.Y = rng.Next((int)-Height * 2, (int)-Height);
                     position.X = rng.Next(0, (int) (Window.ClientBounds.Width - Width));
                 } while (!GameCore.enemies.Any(IsColliding));
+               Lives = DefaultLives;
             }
-            base.Update();
+            UpdateHitBox();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Storm_Pounder___First_Contact
 {
@@ -19,35 +18,60 @@ namespace Storm_Pounder___First_Contact
         public Rectangle HitBox
         {
             get { return hitbox; }
-            set { hitbox = value; }
         }
 
         public bool IsAlive
         {
-            get { return isAlive; }
-            set { isAlive = value; }
+            get { return Lives > 0; }
         }
+
+        public int Lives { get; set; }
 
         protected PhysicalObject(Animation a, float X, float Y, float speedX, float speedY)
             : base(a, X, Y, speedX, speedY)
         {
-
-            hitbox = (this is Projectile) ? new Rectangle(Convert.ToInt32(X), Convert.ToInt32(Y), Convert.ToInt32(Width), Convert.ToInt32(Height)) : new Rectangle(Convert.ToInt32(X + 5), Convert.ToInt32(Y + 5), Convert.ToInt32(Width - 10), Convert.ToInt32(Height - 10));
             margin = this is Projectile ? 0 : 5;
+            hitbox = new Rectangle(Convert.ToInt32(X + margin), Convert.ToInt32(Y + margin), Convert.ToInt32(Width - 2*margin), Convert.ToInt32(Height - 2*margin));
             spawnPoint.X = X;
-            spawnPoint.Y = Y;
+            spawnPoint.Y = Y;      
         }
 
-        public virtual void Update()
+        public virtual void UpdateHitBox()
         {
             hitbox.X = (int)X + margin;
-            hitbox.Y = (int) Y + margin;
-            hitbox.Width = (int)Width - 10;
-            hitbox.Height = (int)Height - 10;
+            hitbox.Y = (int)Y + margin;
         }
         public bool IsColliding(PhysicalObject victim)
         {
-            return hitbox.Intersects(victim.hitbox);
+            return hitbox.Intersects(victim.hitbox) && PixelCollision(victim);
+        }
+
+        private bool PixelCollision(PhysicalObject victim)
+        {
+            animation.Texture.GetData(0, animationPlayer.CurrentFrame, textureData, 0, textureData.Length);
+            victim.animation.Texture.GetData(0, victim.animationPlayer.CurrentFrame, victim.textureData, 0, victim.textureData.Length);
+
+            int x1 = Math.Max(hitbox.X, victim.HitBox.X);
+            int x2 = Math.Min(hitbox.X + hitbox.Width, victim.HitBox.X + victim.HitBox.Width);
+
+            int y1 = Math.Max(hitbox.Y, victim.HitBox.Y);
+            int y2 = Math.Min(hitbox.Y + hitbox.Height, victim.HitBox.Y + victim.HitBox.Height);
+
+            for (int y = y1; y < y2; y++)
+            {
+                for (int x = x1; x < x2; x++)
+                {
+                    // Get the color of both pixels at this point
+                    Color a = textureData[(x - hitbox.X) + (y - hitbox.Y) * Width];
+                    Color b = victim.textureData[(x - victim.hitbox.X) + (y - victim.hitbox.Y) * victim.Width];
+
+                    // If both pixels are not completely transparent,
+                    if (a.A > 127 && b.A > 127)
+                        return true;
+                    
+                }
+            }
+            return false;
         }
     }
 }
