@@ -82,7 +82,7 @@ namespace Storm_Pounder___First_Contact
 
             // Calculate the source rectangle of the current frame.
             // Draw the current frame.
-            spriteBatch.Draw(Animation.Texture, position, CurrentFrame, color.HasValue ? color.Value : Color.White * opacity, rotation, Vector2.Zero, 1.0f, spriteEffects, 0.0f);
+            spriteBatch.Draw(Animation.Texture, position, CurrentFrame, color.HasValue ? color.Value : Color.White * opacity, rotation, new Vector2(Animation.FrameWidth / 2, Animation.FrameHeight / 2), 1.0f, spriteEffects, 0.0f);
         }
     }
 }

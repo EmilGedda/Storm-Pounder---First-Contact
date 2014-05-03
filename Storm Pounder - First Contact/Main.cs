@@ -12,13 +12,13 @@ namespace Storm_Pounder___First_Contact
     {
         readonly GraphicsDeviceManager _graphics;
         SpriteBatch spriteBatch;
-        static readonly List<StandardEnemy> Enemies = new List<StandardEnemy>();
+        static readonly List<Enemy> Enemies = new List<Enemy>();
 
         public Main() 
         {
             _graphics = new GraphicsDeviceManager(this)
             {
-                IsFullScreen = false,
+                IsFullScreen = true,
                 PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height,
                 PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width,
                 PreferMultiSampling = true,
@@ -45,7 +45,7 @@ namespace Storm_Pounder___First_Contact
 
         protected override void Update(GameTime gameTime)
         {
-
+	        GameCore.Time = gameTime;
             switch (GameCore.CurrentState)
             {
                 case GameCore.State.Play:
