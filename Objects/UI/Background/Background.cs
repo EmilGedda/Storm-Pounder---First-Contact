@@ -31,11 +31,8 @@ namespace Storm_Pounder___First_Contact.Objects.UI.Background
             {
                 list.Shuffle();
                 for (int j = 0; j < nrBackgroundsY; j++)
-					background[i][j] = new BackgroundSprite(sprites[list[j]], new Vector2(0, 0.7F), new Vector2((i - 1) * sprites[list[j]].Width, (j - 1) * sprites[list[j]].Width));
-                
+					background[i][j] = new BackgroundSprite(sprites[list[j]], new Vector2(0, 0.7F), new Vector2((i - 1) * sprites[list[j]].Width, (j - 1) * sprites[list[j]].Width));              
             }
-
-
         }
 
         public void Update(GameWindow window)

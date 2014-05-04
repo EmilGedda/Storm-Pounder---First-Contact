@@ -54,7 +54,9 @@ namespace Storm_Pounder___First_Contact.Core.LevelHandler
 				}
 				enemy.Update(window);
 			}
-			return !player.IsAlive || player.Pause ? (int) Level.LevelState.Pause : (int) Level.LevelState.Active;
+			return !player.IsAlive
+				? (int) Level.LevelState.GameOver
+				: (player.Pause ? (int) Level.LevelState.Pause : (int) Level.LevelState.Active);
 		}
 
 		public void Draw(SpriteBatch sb, GameTime gameTime)

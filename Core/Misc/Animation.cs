@@ -29,5 +29,12 @@ namespace Storm_Pounder___First_Contact
             IsLooping = isLooping;
             FrameWidth = width;
         }
+		public Animation(Texture2D texture, float frameTime, bool isLooping)
+		{
+			Texture = texture;
+			FrameTime = frameTime;
+			IsLooping = isLooping;
+			FrameWidth = texture.Height;
+		}
     }
 }

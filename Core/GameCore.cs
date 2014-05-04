@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using C3.XNA;
 using Microsoft.Xna.Framework;
@@ -47,6 +48,12 @@ namespace Storm_Pounder___First_Contact.Core
 		private static GraphicsDeviceManager graphicsDevice;
 		public static ContentManager Content;
 		private static GameWindow _window;
+		private static int totalEnemies;
+		private static Texture2D heart;
+		private static bool shrinking;
+		private static float heartTime = 1;
+		private static AnimationPlayer heartPlayer;
+		private static Vector2 t;
 		public static void Initialize(GraphicsDeviceManager graphics, ContentManager content, GameWindow window)
 		{
 			Enemy.StandardTexture = content.Load<Texture2D>(EnemyTexture);
@@ -56,13 +63,15 @@ namespace Storm_Pounder___First_Contact.Core
 			graphicsDevice = graphics;
 			player = new Player(new Animation(content.Load<Texture2D>(PlayerTexture), 1F, false, 64), new Vector2(window.ClientBounds.Height - 96, window.ClientBounds.Width / 2), new Vector2(SpeedX * 2, SpeedY * 2), content.Load<Texture2D>("images/lazer"), content.Load<SoundEffect>("sounds/shoot"));
 			PhysicalObject.DeathAnimation = new Animation(content.Load<Texture2D>("images/greyExplosion"), 0.03F, true, 102);
-
+			heart = content.Load<Texture2D>("images/hud/heart");
+			shrinking = true;
 			Levels = new List<Level>(1) { Level.One(), Level.Two(), Level.Three() };
+			totalEnemies = Level.One().EnemiesAlive;
 		}
 
 		public static void LoadContent(ContentManager content, GameWindow window)
 		{
-			hud = content.Load<Texture2D>("images/hud/bg");
+			hud = content.Load<Texture2D>("images/hud/HUD");
 			GameView = window.ClientBounds;
 			GameView.Width -= hud.Width;
 			GameView.Y = 0;
@@ -83,6 +92,7 @@ namespace Storm_Pounder___First_Contact.Core
 			content.Load<SoundEffect>("sounds/lets_go").Play();
 
 			Stencil = new Font(content.Load<SpriteFont>("fonts/Stencil"));
+			t = Stencil.Size("Nothing here yet");
 			//player.IsInvincible = true;
 
 		}
@@ -93,6 +103,16 @@ namespace Storm_Pounder___First_Contact.Core
 			FPS.Update(gameTime);
 			State s = State.Menu;
 			Level.LevelState levelState = Levels[currentLevel].Update(window, gameTime);
+			if (shrinking)
+				heartTime -= 0.02F;
+			else
+				heartTime += 0.02F;
+
+			if (heartTime < 0.5)
+				shrinking = false;
+			else if(heartTime > 1)
+				shrinking = true;
+			
 
 			switch (levelState)
 			{
@@ -101,6 +121,10 @@ namespace Storm_Pounder___First_Contact.Core
 					s = State.Menu; // TODO: Pause
 					break;
 				case Level.LevelState.GameOver:
+					Levels[0].End(null, null);
+					Levels[0] = Level.One();
+					player.Reset(GameView.Width / 2, GameView.Height - 96, SpeedX * 2, SpeedY * 2);
+					missed = 0;
 					s = State.Menu; // TODO: Game over
 					break;
 				case Level.LevelState.End: // TODO: Level complete
@@ -118,13 +142,13 @@ namespace Storm_Pounder___First_Contact.Core
 
 		public static State MenuUpdate(GameTime gameTime)
 		{
-			player.Health = 3;
 			return (State)menu.Update(gameTime);
 		}
 		public static State HighscoreUpdate()
 		{
 			KeyboardState kState = Keyboard.GetState();
 			return kState.IsKeyDown(Keys.Escape) ? State.Menu : State.HighScore;
+
 		}
 		public static State OptionsUpdate()
 		{
@@ -137,22 +161,20 @@ namespace Storm_Pounder___First_Contact.Core
 		public static void RunDraw(GameTime gameTime, SpriteBatch spriteBatch)
 		{
 			Levels[currentLevel].Draw(spriteBatch, gameTime);
-
-			Stencil.Write(String.Format("Score: {0}\nEnemies: {1}\nFPS: {2}\nLives: {3}\nMissed: {4}", player.Points,
-				Levels[currentLevel].EnemiesAlive,
-				FPS.ToString(),
-				player.Health,
-				Levels[currentLevel].Missed),
-				spriteBatch,
-				20,
-				10
-			);
-
 			spriteBatch.Draw(hud, HUDView, Color.White);
+			for (int i = 0; i < player.Health; i++)
+			{
+				spriteBatch.Draw(heart, new Vector2(HUDView.Width / 2 + HUDView.Left - 95 + 97 * i - heart.Width/2 * heartTime, 800 - heart.Height/2 * heartTime), null, Color.Wheat, 0, Vector2.Zero, heartTime, SpriteEffects.None, 0);
+			}
+			Stencil.Write(player.Points.ToString(CultureInfo.InvariantCulture), spriteBatch, HUDView.Right - 150, 50);
+			Stencil.Write(Levels[currentLevel].EnemiesAlive.ToString(CultureInfo.InvariantCulture), spriteBatch, HUDView.Right - 150, 125);
+			double percent = 100 * (player.Points + missed) / totalEnemies;
+
+			Stencil.Write(string.Format("{0}%", percent), spriteBatch, HUDView.Right - 150, 200);
 		}
 		public static void HighScoreDraw(SpriteBatch spriteBatch)
 		{
-
+			Stencil.Write("Nothing here yet", spriteBatch, (GameView.Width + HUDView.Width) / 2 - t.X / 2, GameView.Height / 2);
 		}
 		public static void MenuDraw(SpriteBatch spriteBatch)
 		{

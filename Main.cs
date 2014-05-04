@@ -20,7 +20,7 @@ namespace Storm_Pounder___First_Contact
 			GameCore.ServiceProvider = Content.ServiceProvider;
 			_graphics = new GraphicsDeviceManager(this)
 			{
-				IsFullScreen = false,
+				IsFullScreen = true,
 				PreferredBackBufferHeight = 1080,
 				PreferredBackBufferWidth = 1920,
 				PreferMultiSampling = true,
@@ -57,7 +57,7 @@ namespace Storm_Pounder___First_Contact
 					GameCore.CurrentState = GameCore.RunUpdate(Window, gameTime);
 					break;
 				case GameCore.State.HighScore:
-					IsMouseVisible = true;
+
 					GameCore.CurrentState = GameCore.HighscoreUpdate();
 					break;
 				case GameCore.State.Quit:
@@ -79,10 +79,6 @@ namespace Storm_Pounder___First_Contact
 		{
 			GraphicsDevice.Clear(Color.Black);
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
-			//var rect = new Texture2D(_graphics.GraphicsDevice, 1, 1);
-			//rect.SetData(new[] { Color.White });
-			//spriteBatch.Draw(rect, _player.HitBox, Color.Red);
-			// Hitboxes
 			switch (GameCore.CurrentState)
 			{
 				case GameCore.State.Play:

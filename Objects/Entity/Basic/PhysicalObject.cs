@@ -14,13 +14,6 @@ namespace Storm_Pounder___First_Contact.Objects.Entity.Basic
 
 		public event EventHandler<GameEventArgs> Spawn;
 		public event EventHandler<GameEventArgs> OutOfBounds;
-
-		protected virtual void OnOutOfBounds(GameEventArgs e)
-		{
-			EventHandler<GameEventArgs> handler = OutOfBounds;
-			if (handler != null) handler(this, e);
-		}
-
 		public event EventHandler<GameEventArgs> Dying;
 		public event EventHandler<GameEventArgs> Dead;
 		public event EventHandler<GameEventArgs> Move;
@@ -49,6 +42,11 @@ namespace Storm_Pounder___First_Contact.Objects.Entity.Basic
 			if (handler != null) handler(this, e);
 		}
 
+		protected virtual void OnOutOfBounds(GameEventArgs e)
+		{
+			EventHandler<GameEventArgs> handler = OutOfBounds;
+			if (handler != null) handler(this, e);
+		}
 
 		public static Animation DeathAnimation { get; set; }
 		protected AnimationPlayer deathPlayer;

@@ -57,11 +57,15 @@ namespace Storm_Pounder___First_Contact.Core.LevelHandler
 			phases.Ending += End;
 
 			foreach (var e in phases.Phases.SelectMany(phase => phase.Enemies))
-				e.OutOfBounds += (sender, args) => Missed++;
-			
+				e.OutOfBounds +=  MissedEnemy;
+
 		}
 
-		private void End(object sender, GameEventArgs args)
+		private void MissedEnemy(object sender, GameEventArgs args)
+		{
+			Missed++;
+		}
+		public void End(object sender, GameEventArgs args)
 		{
 			UnloadContent();
 			OnEnding(new GameEventArgs(GameCore.Time));
@@ -76,6 +80,12 @@ namespace Storm_Pounder___First_Contact.Core.LevelHandler
 		private void UnloadContent()
 		{
 			contentManager.Unload();
+			phases.Ending -= End;
+			foreach (var e in phases.Phases.SelectMany(phase => phase.Enemies))
+				e.OutOfBounds -= MissedEnemy;
+			foreach (Phase phase in phases.Phases)
+				phase.Enemies.Clear();
+			Started = false;
 		}
 		protected virtual void OnStarting(GameEventArgs e)
 		{

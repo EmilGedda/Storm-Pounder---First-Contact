@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Storm_Pounder___First_Contact.Core;
+using Storm_Pounder___First_Contact.Core.Event;
 using Storm_Pounder___First_Contact.Objects.Entity.Basic;
 
 namespace Storm_Pounder___First_Contact.Objects.Entity
@@ -22,8 +23,7 @@ namespace Storm_Pounder___First_Contact.Objects.Entity
         public int Points { get; set; }
         public bool Pause { get; set; }
 
-        private List<Projectile> bullets;
-        private Texture2D bulletTexture;
+	    private Texture2D bulletTexture;
         private SoundEffect shot;
 
         public bool IsInvincible { get; set; }
@@ -31,15 +31,16 @@ namespace Storm_Pounder___First_Contact.Objects.Entity
 
         public new int Health { get { return base.Health; } set { base.Health = IsInvincible ? base.Health : value; } }
 
-        public IEnumerable<Projectile> Bullets { get { return bullets; } }
+	    public List<Projectile> Bullets { get; private set; }
 
-        public Player(Animation a, Vector2 position, Vector2 maxSpeed, Texture2D bulletTexture, SoundEffect shot)
+	    public Player(Animation a, Vector2 position, Vector2 maxSpeed, Texture2D bulletTexture, SoundEffect shot)
             : base(a, position, Vector2.Zero)
-        {
+	    {
+		    Health = 3;
 	        Instance = this;
             Points = 0;
             this.shot = shot;
-            bullets = new List<Projectile>();
+            Bullets = new List<Projectile>();
             this.bulletTexture = bulletTexture;
             MaxSpeedX = maxSpeed.X;
             MaxSpeedY = maxSpeed.Y;
@@ -95,30 +96,44 @@ namespace Storm_Pounder___First_Contact.Objects.Entity
                 {
                     Projectile bRight = new Projectile(new Animation(bulletTexture, 1F, true, bulletTexture.Width), new Vector2(Center.X - (bulletTexture.Width / 2) + 24, position.Y + Height - 24));
                     Projectile bLeft = new Projectile(new Animation(bulletTexture, 1F, true, bulletTexture.Width), new Vector2(Center.X - (bulletTexture.Width / 2) - 24, position.Y + Height - 24));
-                    bullets.Add(bLeft);
-                    bullets.Add(bRight);
-	                bLeft.Dead += (sender, args) => bullets.Remove(sender as Projectile);
-					bLeft.OutOfBounds += (sender, args) => bullets.Remove(sender as Projectile);
-	                bRight.Dead += (sender, args) => bullets.Remove(sender as Projectile);
-					bRight.OutOfBounds += (sender, args) => bullets.Remove(sender as Projectile);
+                    Bullets.Add(bLeft);
+                    Bullets.Add(bRight);
+	                bLeft.Dead += Remove;
+					bLeft.OutOfBounds += Remove;
+	                bRight.Dead += Remove;
+					bRight.OutOfBounds += Remove;
                     LastBulletTime = gameTime.TotalGameTime.TotalMilliseconds;
                     shot.Play(0.15F, 0F, 0F);
                 }
             }
-            foreach (Projectile b in bullets.ToList())
+            foreach (Projectile b in Bullets.ToList())
                 b.Update();
             
             #endregion
             UpdateHitBox();
         }
 
+	    private void Remove(object sender, GameEventArgs args)
+	    {
+		    Bullets.Remove(sender as Projectile);
+	    }
         public void Reset(float X, float Y, float speedX, float speedY)
         {
-
+			Position = new Vector2(X, Y);
+	        MaxSpeedX = speedX;
+	        MaxSpeedY = speedY;
+	        Points = 0;
+	        Health = 3;
+	        foreach (var bullet in Bullets)
+	        {
+		        bullet.Dead -= Remove;
+		        bullet.OutOfBounds -= Remove;
+	        }
+			Bullets.Clear();
         }
         public override void Draw(SpriteBatch sb, GameTime gameTime)
         {
-            foreach (Projectile b in bullets)
+            foreach (Projectile b in Bullets)
                 b.Draw(sb, gameTime, SpriteEffects.None, opacity: b.Y < 50 ? (b.Y + 50) / 100 : 1); //opacity:(b.Y < 150 ? (b.Y+50)/ 200 : 1)
 
             base.Draw(sb, gameTime);
