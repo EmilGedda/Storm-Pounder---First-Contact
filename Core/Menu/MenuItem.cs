@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 #endregion
 
-namespace Storm_Pounder___First_Contact
+namespace Storm_Pounder___First_Contact.Core.Menu
 {
     class MenuItem
     {

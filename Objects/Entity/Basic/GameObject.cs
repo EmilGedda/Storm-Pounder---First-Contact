@@ -1,8 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Storm_Pounder___First_Contact
+namespace Storm_Pounder___First_Contact.Objects.Entity.Basic
 {
 	abstract class GameObject
 	{
@@ -10,7 +9,6 @@ namespace Storm_Pounder___First_Contact
 		protected AnimationPlayer idlePlayer;
 		protected Vector2 position;
 		protected Color[] textureData;
-		private readonly Guid guid;
 		public Vector2 Center
 		{
 			get
@@ -37,7 +35,6 @@ namespace Storm_Pounder___First_Contact
 
 		protected GameObject(Animation a, Vector2 position)
 		{
-			guid = new Guid();
 			IdleAnimation = a;
 			this.position = position;
 			idlePlayer.PlayAnimation(a);

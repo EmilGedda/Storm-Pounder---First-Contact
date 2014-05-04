@@ -1,20 +1,19 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using Storm_Pounder___First_Contact.Core;
 using Storm_Pounder___First_Contact.Core.Event;
+using Storm_Pounder___First_Contact.Objects.Entity.Basic;
 
-namespace Storm_Pounder___First_Contact
+namespace Storm_Pounder___First_Contact.Objects.Entity
 {
 	class Enemy : PhysicalObject
 	{
 		public static SoundEffect Destruction { get; set; }
 		private SoundEffect destruction { get; set; }
 		public static Texture2D StandardTexture;
-		private Animation d;
 		public delegate Vector2 VectorUpdate(Enemy sender);
 		private EventHandler<GameEventArgs> playDeathSound = (sender, args) => ((Enemy)sender).destruction.Play(0.2F, 1F, 0F);
 		public VectorUpdate UpdatePosition;
@@ -28,26 +27,17 @@ namespace Storm_Pounder___First_Contact
 		{
 			deathPlayer.PlayAnimation(DeathAnimation);
 			destruction = death;
-			Lives = DefaultLives;
+			Health = DefaultLives;
 
 			Dying += playDeathSound;
 			UpdatePosition += p;
 			UpdateSpeed += s;
 			OutOfBounds += (sender, args) => Dying -= playDeathSound;
-			Dying += (sender, args) =>
-			{
-				if (((Enemy)sender).deathPlayer.FrameIndex + 2 > DeathAnimation.FrameCount)
-				{
-					IsDying = false;
-					OnDead(new GameEventArgs(GameCore.Time));
-				}
-			};
 
 			OnSpawn(new GameEventArgs(GameCore.Time));
 		}
 		public void Update(GameWindow window)
 		{
-
 			if (UpdateSpeed != null)
 				speed = UpdateSpeed(this);
 			if (UpdatePosition != null)
@@ -74,7 +64,7 @@ namespace Storm_Pounder___First_Contact
 				position.Y = rng.Next(-Height * 2, -Height);
 				position.X = rng.Next(0, GameCore.GameView.Width - Width);
 			} while (!GameCore.enemies.Any(IsColliding));
-			Lives = DefaultLives;
+			Health = DefaultLives;
 			OnSpawn(new GameEventArgs(GameCore.Time));
 		}
 
@@ -88,7 +78,6 @@ namespace Storm_Pounder___First_Contact
 			}
 			if (IsAlive)
 				base.Draw(sb, gameTime);
-
 		}
 
 		public static Enemy Standard(Vector2 position, Vector2 speed)

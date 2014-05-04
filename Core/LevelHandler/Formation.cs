@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
+using Storm_Pounder___First_Contact.Objects.Entity;
 
-namespace Storm_Pounder___First_Contact.Core
+namespace Storm_Pounder___First_Contact.Core.LevelHandler
 {
 	class Formation
 	{
+		public enum DirectionTowards
+		{
+			Left,
+			Right,
+			Down
+		};
+
 		public List<Enemy> Enemies { get; private set; }
 
 		private Enemy Last

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Storm_Pounder___First_Contact
+namespace Storm_Pounder___First_Contact.Objects.Entity.Basic
 {
     abstract class MovingObject : GameObject
     {

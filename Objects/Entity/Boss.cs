@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
-namespace Storm_Pounder___First_Contact
+namespace Storm_Pounder___First_Contact.Objects.Entity
 {
     class Boss : Enemy
     {
@@ -10,7 +10,7 @@ namespace Storm_Pounder___First_Contact
 			: base(a, position, speed, death, sender => Vector2.Zero, sender => Vector2.Zero)
         {
             DefaultLives = 3;
-            Lives = DefaultLives;
+            Health = DefaultLives;
         }
 	    
     }

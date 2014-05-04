@@ -12,7 +12,7 @@ namespace Storm_Pounder___First_Contact.Objects.UI.Background
         private Texture2D[] sprites;
         private int nrBackgroundsX, nrBackgroundsY;
 
-        public Background(ContentManager content, string folder, GameWindow window)
+        public  Background(ContentManager content, string folder, GameWindow window)
         {
 
             sprites = new Texture2D[21];

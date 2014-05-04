@@ -1,14 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using System.Linq;
+using Storm_Pounder___First_Contact.Core;
+using Storm_Pounder___First_Contact.Objects.Entity.Basic;
 
-namespace Storm_Pounder___First_Contact
+namespace Storm_Pounder___First_Contact.Objects.Entity
 {
     class Player : PhysicalObject
     {
+	    public static Player Instance { get; private set; }
         double LastBulletTime;
 
         private float MaxSpeedX;
@@ -26,14 +29,14 @@ namespace Storm_Pounder___First_Contact
         public bool IsInvincible { get; set; }
         public new bool IsAlive { get { return base.IsAlive || IsInvincible; } }
 
-        public new int Lives { get { return base.Lives; } set { base.Lives = IsInvincible && value < base.Lives ? base.Lives : value; } }
+        public new int Health { get { return base.Health; } set { base.Health = IsInvincible ? base.Health : value; } }
 
         public IEnumerable<Projectile> Bullets { get { return bullets; } }
 
         public Player(Animation a, Vector2 position, Vector2 maxSpeed, Texture2D bulletTexture, SoundEffect shot)
             : base(a, position, Vector2.Zero)
         {
-			
+	        Instance = this;
             Points = 0;
             this.shot = shot;
             bullets = new List<Projectile>();
@@ -94,16 +97,17 @@ namespace Storm_Pounder___First_Contact
                     Projectile bLeft = new Projectile(new Animation(bulletTexture, 1F, true, bulletTexture.Width), new Vector2(Center.X - (bulletTexture.Width / 2) - 24, position.Y + Height - 24));
                     bullets.Add(bLeft);
                     bullets.Add(bRight);
+	                bLeft.Dead += (sender, args) => bullets.Remove(sender as Projectile);
+					bLeft.OutOfBounds += (sender, args) => bullets.Remove(sender as Projectile);
+	                bRight.Dead += (sender, args) => bullets.Remove(sender as Projectile);
+					bRight.OutOfBounds += (sender, args) => bullets.Remove(sender as Projectile);
                     LastBulletTime = gameTime.TotalGameTime.TotalMilliseconds;
                     shot.Play(0.15F, 0F, 0F);
                 }
             }
             foreach (Projectile b in bullets.ToList())
-            {
-                b.UpdateHitBox();
-                if (!b.IsAlive)
-                    bullets.Remove(b);
-            }
+                b.Update();
+            
             #endregion
             UpdateHitBox();
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Storm_Pounder___First_Contact;
+using Storm_Pounder___First_Contact.Core;
 
 namespace C3.XNA
 {

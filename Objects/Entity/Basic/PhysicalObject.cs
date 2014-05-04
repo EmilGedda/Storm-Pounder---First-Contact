@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
 using Microsoft.Xna.Framework;
 using Storm_Pounder___First_Contact.Core.Event;
 
-namespace Storm_Pounder___First_Contact
+namespace Storm_Pounder___First_Contact.Objects.Entity.Basic
 {
 	abstract class PhysicalObject : MovingObject
 	{
-		private bool isAlive = true;
 		public bool IsDying { get; set; }
 		public bool IsDead { get { return !IsAlive && !IsDying; } }
 		private Vector2 spawnPoint;
@@ -68,10 +66,10 @@ namespace Storm_Pounder___First_Contact
 
 		public bool IsAlive
 		{
-			get { return Lives > 0; }
+			get { return Health > 0; }
 		}
 
-		public int Lives { get; set; }
+		public int Health { get; set; }
 
 		protected PhysicalObject(Animation a, Vector2 position, Vector2 speed)
 			: base(a, position, speed)
@@ -82,7 +80,6 @@ namespace Storm_Pounder___First_Contact
 			spawnPoint.Y = Y;
 
 		}
-
 		public virtual void UpdateHitBox()
 		{
 			hitbox.X = (int)X + margin;
@@ -90,7 +87,7 @@ namespace Storm_Pounder___First_Contact
 		}
 		public bool IsColliding(PhysicalObject victim)
 		{
-			return hitbox.Intersects(victim.hitbox);// && PixelCollision(victim);
+			return hitbox.Intersects(victim.hitbox) && PixelCollision(victim);
 		}
 
 		private bool PixelCollision(PhysicalObject victim)
